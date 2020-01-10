@@ -8,13 +8,13 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
+
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"createdAt","updatedAt"}, allowGetters = true)
-public abstract class Auditable implements Serializable {
+public abstract class ProductAuditable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
@@ -34,23 +34,4 @@ public abstract class Auditable implements Serializable {
     @Getter
     @Setter
     private Date updatedAt = new Date();
-
-    @Getter
-    @Setter
-    @NotBlank
-    private String username;
-
-    @Getter
-    @Setter
-    @NotBlank
-    private String password;
-
-
-
-//    private String house;
-//    private String area;
-//    private String city;
-//    private String state;
-//    private Integer pincode;
-
 }

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +29,7 @@ public class User extends Auditable {
 
     @Getter
     @Setter
-    @NotBlank
+    @NotNull
     private Long phoneNumber;
 
     @Getter
@@ -43,7 +44,7 @@ public class User extends Auditable {
 
     @Getter
     @Setter
-    @NotBlank
+    @NotNull
     private Long pincode;
 
     public User(){
@@ -70,10 +71,10 @@ public class User extends Auditable {
 
     public static final class Builder{
         private @NotBlank String name;
-        private @NotBlank Long phoneNumber;
+        private @NotNull Long phoneNumber;
         private @NotBlank String area;
         private @NotBlank String city;
-        private @NotBlank Long pincode;
+        private @NotNull Long pincode;
         private @NotBlank String username;
         private @NotBlank String password;
 

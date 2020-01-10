@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -29,8 +30,23 @@ public class Buyer extends Auditable{
 
     @Getter
     @Setter
-    @NotBlank
+    @NotNull
     private Long phoneNumber;
+
+    @Getter
+    @Setter
+    @NotBlank
+    private String area;
+
+    @Getter
+    @Setter
+    @NotBlank
+    private String city;
+
+    @Getter
+    @Setter
+    @NotNull
+    private Long pincode;
 
 
     public Buyer(){
@@ -41,6 +57,11 @@ public class Buyer extends Auditable{
         setName(builder.name);
         setShopName(builder.shopName);
         setPhoneNumber(builder.phoneNumber);
+        setArea(builder.area);
+        setCity(builder.city);
+        setPincode(builder.pincode);
+        setUsername(builder.username);
+        setPassword(builder.password);
     }
 
     public boolean login(String password) {
@@ -53,12 +74,12 @@ public class Buyer extends Auditable{
     public static final class Builder{
         private @NotBlank  String name;
         private @NotBlank String shopName;
-        private @NotBlank Long phoneNumber;
+        private @NotNull Long phoneNumber;
         private @NotBlank String username;
         private @NotBlank String password;
         private @NotBlank String area;
         private @NotBlank String city;
-        private @NotBlank Long pincode;
+        private @NotNull Long pincode;
 
 
         public Builder(){
