@@ -65,6 +65,6 @@ public class BuyerController {
 
     @GetMapping("/home/{bid}")
     public List<Order> orderList(@PathVariable(value = "bid") Long buyerId){
-        return orderRepository.findAllByBuyer(buyerId);
+        return orderRepository.findAllByBuyerId(buyerId);
     }
 }

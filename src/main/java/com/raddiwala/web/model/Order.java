@@ -2,6 +2,7 @@ package com.raddiwala.web.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,13 +16,14 @@ public class Order extends ProductAuditable {
     @ManyToMany(cascade = CascadeType.ALL)
     @Getter
     @Setter
-    private List<ProductQuantity> map = new ArrayList<>();
+    private List<ProductQuantity> prodQty = new ArrayList<>();
 
     @Getter
     @Setter
-    private User user;
+    private Long userId;
 
     @Getter
     @Setter
-    private Buyer buyer;
+    private Long buyerId;
+//    @RequestBody String input.get("key1")
 }

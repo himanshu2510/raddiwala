@@ -11,7 +11,7 @@ import javax.persistence.Entity;
 public class ProductQuantity  extends ProductAuditable{
     @Getter
     @Setter
-    private Product product;
+    private Long productId;
 
     @Getter
     @Setter

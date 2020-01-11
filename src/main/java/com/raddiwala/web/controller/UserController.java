@@ -1,9 +1,7 @@
 package com.raddiwala.web.controller;
 
 import com.raddiwala.web.model.*;
-import com.raddiwala.web.repository.BuyerRepository;
-import com.raddiwala.web.repository.ProductRepository;
-import com.raddiwala.web.repository.UserRepository;
+import com.raddiwala.web.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +25,12 @@ public class UserController {
 
     @Autowired
     BuyerRepository buyerRepository;
+
+    @Autowired
+    OrderRepository orderRepository;
+
+    @Autowired
+    InvoiceRepository invoiceRepository;
 
     @GetMapping("/test")
     public String test(){
@@ -96,8 +100,27 @@ public class UserController {
     }
 
     @PostMapping("/place-order")
-    public String placeOrder(){
-        return "order placed successfully";
+    public Invoice placeOrder(@RequestBody Order tentativeOrder) throws Exception {
+        System.out.println(tentativeOrder);
+        Long invoiceAmount = 0l;
+       List<ProductQuantity> prodQtyMap = tentativeOrder.getProdQty();
+       System.out.println(prodQtyMap);
+       for(ProductQuantity p:prodQtyMap){
+           Product product = productRepository.findById(p.getProductId()).orElseThrow(()->new Exception("product not found"));
+           invoiceAmount += product.getPrice()*p.getQuantity();
+       }
+        orderRepository.save(tentativeOrder);
+       Invoice invoice = new Invoice();
+       invoice.setOrderId(tentativeOrder.getId());
+       System.out.println(tentativeOrder.getId());
+       invoice.setInvoiceAmount(invoiceAmount);
+       invoiceRepository.save(invoice);
+        return invoice;
+    }
+
+    @GetMapping("show-orders")
+    public List<Order> getOrders(){
+        return orderRepository.findAll();
     }
 
     @GetMapping("/get-buyers/{uid}")
