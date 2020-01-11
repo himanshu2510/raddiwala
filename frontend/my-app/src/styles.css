@@ -1,0 +1,24 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+body {
+  background-color: darkviolet;
+}
+#submit {
+  background-color: limegreen;
+}
+
+.jumbotron {
+  margin-top: 50px;
+  background-color: snow;
+}
+.card {
+  margin-left: 25px;
+  margin-right: 25px;
+  background-color: orchid;
+}
+
+hr {
+  width: 70%;
+}
