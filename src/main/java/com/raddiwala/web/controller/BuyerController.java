@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Null;
 import java.util.List;
 
 @RestController
@@ -37,7 +38,11 @@ public class BuyerController {
 
     @PostMapping("signup")
     public ResponseEntity<String> buyerSignup(@RequestBody BuyerSignupForm buyerSignupForm){
-        //TODO: first check if buyername already exists or not if yes then return that buyername already registered if not then create a new buyer
+
+        Buyer buyer1  = buyerRepository.findBuyerByUsername(buyerSignupForm.getUsername());
+        if(buyer1 != null){
+            return new ResponseEntity<String>("buyer  exist already", HttpStatus.BAD_REQUEST);
+        }
         Buyer buyer = new Buyer.Builder()
                 .name(buyerSignupForm.getName())
                 .shopName(buyerSignupForm.getShopName())
@@ -55,12 +60,14 @@ public class BuyerController {
 
     @PostMapping("/login")
     public ResponseEntity<String> buyerLogin(@RequestBody LoginForm loginForm){
-        //TODO: first check if buyername exists or not if not then return that buyer doesnot exist and if yes check the password
         Buyer buyer = buyerRepository.findBuyerByUsername(loginForm.getUsername());
-        if(buyer.login(loginForm.getPassword())){
-            return new ResponseEntity<String>("password matched login successful", HttpStatus.OK);
+        if(buyer!= null){
+            if(buyer.login(loginForm.getPassword())){
+                return new ResponseEntity<String>("password matched login successful", HttpStatus.OK);
+            }
+            return new ResponseEntity<String>("incorrect password try again", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<String>("incorrect password try again", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<String>("buyer does not exist", HttpStatus.BAD_REQUEST);
     };
 
     @GetMapping("/home/{bid}")

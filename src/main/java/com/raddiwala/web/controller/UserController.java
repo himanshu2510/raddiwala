@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Null;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,7 +50,11 @@ public class UserController {
 
     @PostMapping("signup")
     public ResponseEntity<String> userSignup(@RequestBody SignupForm signupForm){
-        //TODO: first check if username already exists or not if yes then return that username already registered if not then create a new user
+
+        User usr  = userRepository.findUserByUsername(signupForm.getUsername());
+        if(usr != null){
+            return new ResponseEntity<String>("user exist already", HttpStatus.BAD_REQUEST);
+        }
         User user = new User.Builder()
                 .name(signupForm.getName())
                 .phoneNumber(signupForm.getPhoneNumber())
@@ -65,13 +71,16 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<String> userLogin(@RequestBody LoginForm loginForm){
-        //TODO: first check if username exists or not if not then return that user doesnot exist and if yes check the password
-        User user = userRepository.findUserByUsername(loginForm.getUsername());
-        if(user.login(loginForm.getPassword())){
 
-            return new ResponseEntity<String>("password matched login successful", HttpStatus.OK);
+        User user = userRepository.findUserByUsername(loginForm.getUsername());
+        if(user!= null) {
+            if (user.login(loginForm.getPassword())) {
+
+                return new ResponseEntity<String>("password matched login successful", HttpStatus.OK);
+            }
+            return new ResponseEntity<String>("incorrect password try again", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<String>("incorrect password try again", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<String>("user does not exist", HttpStatus.BAD_REQUEST);
     };
 
     @GetMapping("/home")
