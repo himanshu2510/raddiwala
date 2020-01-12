@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>User signup</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+	Enter name<input type = "text" id = "name"><br/>
+	Enter shopName<input type = "text" id = "shopName"><br/>
+	Enter Phone Number<input type = "Number" id = "phoneNumber"><br/>
+	Enter Area<input type = "text" id = "area"><br/>
+	Enter city<input type = "text" id = "city"><br/>
+	Enter pincode<input type = "Number" id = "pincode"><br/>
+	Enter username<input type = "text" id = "username"><br/>
+	Enter password<input type = "text" id = "password"><br/>
+	<button onclick="register();">Submit</button>
+	<script>
+		function register() {
+			console.log("came");
+
+			var data = {
+				"name": document.getElementById("name").value,
+				"shopName": document.getElementById("shopName").value,
+				"phoneNumber": document.getElementById("phoneNumber").value,
+				"city": document.getElementById("city").value,
+				"area": document.getElementById("area").value,
+				"pincode": document.getElementById("pincode").value,
+				"username": document.getElementById("username").value,
+				"password": document.getElementById("password").value,
+
+			};
+
+			$.ajax({
+	            url:  "http://localhost:8080/buyer-api/signup",
+	            type: 'POST',
+	            dataType: 'json',
+	            data:  JSON.stringify(data),
+	            contentType: 'application/json; charset=utf-8',
+	            success: function (result) {
+	               console.log("resp", result);
+	            },
+	            error: function (error) {
+	                
+	            }
+        	});
+		}
+	
+</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
+	<link rel="stylesheet" type="text/css" href="css/home.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class = "container container-fluid">
+		<fieldset class="field-checkbox">
+			<h1 class="heading">Price List</h1>
+			<div id = "load" class = "checkbox">
+
+			</div>
+    	<!-- <input type="checkbox" name="checkbox-choice" id="checkbox-choice-1" value="choice-1" />
+    	<label for="checkbox-choice-1">Choice 1</label> -->
+  		</fieldset>
+
+		
+		<div id = "load2" class = "checkbox">
+		</div>
+	</div>
+	
+	<script type="text/javascript">
+		$(document).ready(function(){
+			var g;
+			$.get("http://localhost:8080/user-api/home",function(data){
+				console.log(data);
+				var i;
+				for(i=0;i<data.length;i++){
+					document.getElementById("load").innerHTML += "<input type ='checkbox' name = 'productForm' value = '"+data[i].productName+"'>"+data[i].productName+" "+data[i].price+" "+data[i].measure+"<br/>";	
+				}
+				document.getElementById("load").innerHTML += "<button class = 'btn btn-primary btnclick' onclick = 'submit()'> submit </button>" 
+				
+			},"json");
+			
+		});
+	</script>
+	<script type="text/javascript">
+		function submit(){
+			var checkboxes = document.getElementsByName("productForm");
+			console.log("hi");
+			var urlString = "";
+			for(var i=0;i<checkboxes.length;i++){
+				if(checkboxes[i].checked){
+					urlString += checkboxes[i].value+","; 
+				}
+			}
+			console.log(urlString);
+
+			var productList = urlString.substring(0,urlString.length-1);
+			var url = "http://localhost:8080/user-api/selected-products/"+productList;
+			$.get(url,function(data){
+				console.log(data);
+				var i;
+				document.getElementById("load").innerHTML = "";
+				for(i=0;i<data.length;i++){
+					document.getElementById("load").innerHTML += "<input type ='number' min = '0'  name = '"+data[i].productName+"'>"+data[i].productName+" "+data[i].price+" "+data[i].measure+"<br/>";	
+				}
+				document.getElementById("load").innerHTML += "<button class = 'btn btn-primary btnclick' onclick = 'submit()'> submit </button>" 
+			},"json");
+
+		}
+
+
+	</script>
+</body>
+</html>
+

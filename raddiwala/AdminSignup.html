@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>User signup</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+	Enter username<input type = "text" id = "username"><br/>
+	Enter password<input type = "text" id = "password"><br/>
+	<button onclick="register();">Submit</button>
+	<script>
+		function register() {
+			console.log("came");
+
+			var data = {
+				"username": document.getElementById("username").value,
+				"password": document.getElementById("password").value,
+
+			};
+
+			$.ajax({
+	            url:  "http://localhost:8080/admin-api/signup",
+	            type: 'POST',
+	            dataType: 'json',
+	            data:  JSON.stringify(data),
+	            contentType: 'application/json; charset=utf-8',
+	            success: function (result) {
+	               console.log("resp", result);
+	            },
+	            error: function (error) {
+	                
+	            }
+        	});
+		}
+	
+</script>
+</body>
+</html>

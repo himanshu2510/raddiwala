@@ -1,0 +1,41 @@
+
+fieldset{
+  border: none;
+  color: #789;
+  margin: auto;
+}
+.heading {
+  margin: auto;
+  text-align: center;
+}
+.field-checkbox{
+  input[type=checkbox]{
+    display: none;
+    & + label{
+      margin: 0 10px;
+      line-height: 13px;
+      display:inline-block;
+      &:before{
+        content: ' ';
+        display: inline-block;
+        width: 13px;
+        height: 13px;
+        background: #456;
+        border: 2px solid;
+        border-radius: 5px;
+        transition: background .5s, color .5s;
+        margin-right: 5px;
+        vertical-align: middle;
+      }
+    }
+    &:checked{
+      & + label{
+        &:before{
+          background: #789;
+          color: #456;
+          content: '\2714';
+        }
+      }
+    }
+  }
+}

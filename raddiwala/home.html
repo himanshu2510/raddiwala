@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+	<div class = "container">
+	</div>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			var data = $('.container').load("http://localhost:8080/user-api/home");
+			// var data = $.get("http://localhost:8080/user-api/home");
+			console.log(data);
+		});
+	</script>
+	<script type="text/javascript">
+		// var data = document.getElementsByClassName("container");
+		// console.log(data);
+	</script>
+</body>
+</html>
