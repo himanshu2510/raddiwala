@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -83,5 +84,52 @@ public class AdminController {
         productRepository.save(newProduct);
         return new ResponseEntity<String>("product added successfully",HttpStatus.OK);
 
+    }
+
+    @PostMapping("/add-all-products")
+    public void addAllProducts() throws IOException {
+//        productRepository.deleteAll();
+        Product paper = new Product.Builder()
+                .productName("Paper")
+                .price(20l)
+                .measure("kg")
+                .build();
+        productRepository.save(paper);
+
+        Product plastic = new Product();
+        paper.setProductName("Plastic");
+        paper.setPrice((long) 15);
+        paper.setMeasure("Kg-Kilograms");
+        productRepository.save(plastic);
+
+        Product cardboard = new Product();
+        paper.setProductName("Card-Board");
+        paper.setPrice((long) 10);
+        paper.setMeasure("Pieces");
+        productRepository.save(cardboard);
+
+        Product electronicWaste = new Product();
+        paper.setProductName("Electronic-Waste");
+        paper.setPrice((long) 25);
+        paper.setMeasure("Pieces");
+        productRepository.save(electronicWaste);
+
+        Product steel = new Product();
+        paper.setProductName("Steel");
+        paper.setPrice((long) 22);
+        paper.setMeasure("Kg-Kilograms");
+        productRepository.save(steel);
+
+        Product liqourBottle = new Product();
+        paper.setProductName("Liquor Bottle");
+        paper.setPrice((long) 32);
+        paper.setMeasure("Pieces");
+        productRepository.save(liqourBottle);
+
+        Product wood = new Product();
+        paper.setProductName("Wood-Work");
+        paper.setPrice((long) 13);
+        paper.setMeasure("Kg-Kilograms");
+        productRepository.save(wood);
     }
 }

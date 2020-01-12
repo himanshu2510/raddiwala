@@ -1,14 +1,16 @@
 package com.raddiwala.web.controller;
-
+import com.google.gson.Gson;
 import com.raddiwala.web.model.*;
 import com.raddiwala.web.model.Buyer;
 import com.raddiwala.web.repository.BuyerRepository;
 import com.raddiwala.web.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Null;
 import java.util.List;
 
 @RestController
@@ -20,6 +22,8 @@ public class BuyerController {
 
     @Autowired
     OrderRepository orderRepository;
+
+    private static final Gson gson = new Gson();
 
     @GetMapping("/test")
     public String test(){
@@ -35,9 +39,13 @@ public class BuyerController {
         return buyerRepository.findById(id).orElseThrow(() -> new Exception("No buyer is found with this id"));
     }
 
-    @PostMapping("signup")
+    @RequestMapping(value = "/signup",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> buyerSignup(@RequestBody BuyerSignupForm buyerSignupForm){
-        //TODO: first check if buyername already exists or not if yes then return that buyername already registered if not then create a new buyer
+
+        Buyer buyer1  = buyerRepository.findBuyerByUsername(buyerSignupForm.getUsername());
+        if(buyer1 != null){
+            return new ResponseEntity<String>("buyer  exist already", HttpStatus.BAD_REQUEST);
+        }
         Buyer buyer = new Buyer.Builder()
                 .name(buyerSignupForm.getName())
                 .shopName(buyerSignupForm.getShopName())
@@ -49,18 +57,20 @@ public class BuyerController {
                 .pincode(buyerSignupForm.getPincode())
                 .build();
         buyerRepository.save(buyer);
-        return new ResponseEntity<String>("buyer created successfully", HttpStatus.OK);
+        return ResponseEntity.ok(gson.toJson("buyer created successfully"));
+
 
     }
 
-    @PostMapping("/login")
+    @RequestMapping(value = "/login",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> buyerLogin(@RequestBody LoginForm loginForm){
-        //TODO: first check if buyername exists or not if not then return that buyer doesnot exist and if yes check the password
         Buyer buyer = buyerRepository.findBuyerByUsername(loginForm.getUsername());
-        if(buyer.login(loginForm.getPassword())){
-            return new ResponseEntity<String>("password matched login successful", HttpStatus.OK);
+        if(buyer!= null){
+            if(buyer.login(loginForm.getPassword())) {
+                return new ResponseEntity<String>("password matched login successful", HttpStatus.OK);
+            }
         }
-        return new ResponseEntity<String>("incorrect password try again", HttpStatus.BAD_REQUEST);
+        return ResponseEntity.badRequest().body(gson.toJson("incorrect password"));
     };
 
     @GetMapping("/home/{bid}")

@@ -1,19 +1,25 @@
 package com.raddiwala.web.controller;
-
+import com.google.gson.Gson;
 import com.raddiwala.web.model.*;
 import com.raddiwala.web.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Null;
+import java.sql.ResultSet;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @CrossOrigin
+@SessionAttributes("userId")
 @RequestMapping("/user-api")
 public class UserController {
 
@@ -32,6 +38,10 @@ public class UserController {
     @Autowired
     InvoiceRepository invoiceRepository;
 
+    private static String sessionUserName = new String();
+
+    private static   Gson gson = new Gson();
+
     @GetMapping("/test")
     public String test(){
         return "user- api working correctly";
@@ -46,10 +56,18 @@ public class UserController {
         return userRepository.findById(id).orElseThrow(() -> new Exception("No user is found with this id"));
     }
 
-    @PostMapping("signup")
+    @RequestMapping(value = "/signup",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> userSignup(@RequestBody SignupForm signupForm){
+
         System.out.println("backend");
         //TODO: first check if username already exists or not if yes then return that username already registered if not then create a new user
+
+
+        User usr  = userRepository.findUserByUsername(signupForm.getUsername());
+        if(usr != null){
+            return ResponseEntity.badRequest().body(gson.toJson("user exist already"));
+        }
+
         User user = new User.Builder()
                 .name(signupForm.getName())
                 .phoneNumber(signupForm.getPhoneNumber())
@@ -59,23 +77,23 @@ public class UserController {
                 .city(signupForm.getCity())
                 .pincode(signupForm.getPincode())
                 .build();
+        sessionUserName = user.getUsername();
         userRepository.save(user);
-        return new ResponseEntity<String>("user created successfully", HttpStatus.OK);
+        return ResponseEntity.ok(gson.toJson("user created successfully"));
 
     }
 
-    @PostMapping("/login")
+    @RequestMapping(value = "/login",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> userLogin(@RequestBody LoginForm loginForm){
-        //TODO: first check if username exists or not if not then return that user doesnot exist and if yes check the password
-        User user = userRepository.findUserByUsername(loginForm.getUsername());
-        if(user.login(loginForm.getPassword())){
 
-//            return new RedirectView("http://localhost:8080/user-api/home");
-            return new ResponseEntity<String>("password matched login successful", HttpStatus.OK);
+        User user = userRepository.findUserByUsername(loginForm.getUsername());
+        if(user!= null) {
+            if (user.login(loginForm.getPassword())) {
+                return ResponseEntity.ok(gson.toJson("password matched"));
+            }
         }
-        return new ResponseEntity<String>("incorrect password try again", HttpStatus.BAD_REQUEST);
-//        return new RedirectView("http://localhost:8080/user-api/login");
-    };
+            return ResponseEntity.badRequest().body(gson.toJson("incorrect password"));
+    }
 
     @GetMapping("/home")
     public List<Product> getProducts(){
@@ -132,12 +150,12 @@ public class UserController {
         return buyerRepository.findAllByCity(user.getCity());
     }
 
-    @GetMapping("/redirectWithRedirectView")
-    public RedirectView redirect(RedirectAttributes attr){
-//        System.out.println();
-//        attr.addFlashAttribute("flashAttribute","redirectWithRedirectView");
-//        attr.addAttribute("attribute","redirectWithRedirectView");
-        return new RedirectView("http://localhost:8080/user-api/home");
+    @RequestMapping(value = "/getUserId",method = RequestMethod.GET, produces =MediaType.APPLICATION_JSON_VALUE)
+    public Long getUserId(){
+        User user = userRepository.findUserByUsername(sessionUserName);
+        return user.getId();
     }
+
+
 
 }
