@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -48,6 +48,7 @@ public class UserController {
 
     @PostMapping("signup")
     public ResponseEntity<String> userSignup(@RequestBody SignupForm signupForm){
+        System.out.println("backend");
         //TODO: first check if username already exists or not if yes then return that username already registered if not then create a new user
         User user = new User.Builder()
                 .name(signupForm.getName())
@@ -69,9 +70,11 @@ public class UserController {
         User user = userRepository.findUserByUsername(loginForm.getUsername());
         if(user.login(loginForm.getPassword())){
 
+//            return new RedirectView("http://localhost:8080/user-api/home");
             return new ResponseEntity<String>("password matched login successful", HttpStatus.OK);
         }
         return new ResponseEntity<String>("incorrect password try again", HttpStatus.BAD_REQUEST);
+//        return new RedirectView("http://localhost:8080/user-api/login");
     };
 
     @GetMapping("/home")
@@ -127,6 +130,14 @@ public class UserController {
     public List<Buyer> getBuyers(@PathVariable(value = "uid") Long userId) throws Exception {
         User user = userRepository.findById(userId).orElseThrow(()->new Exception("no user found while getting buyers list"));
         return buyerRepository.findAllByCity(user.getCity());
+    }
+
+    @GetMapping("/redirectWithRedirectView")
+    public RedirectView redirect(RedirectAttributes attr){
+//        System.out.println();
+//        attr.addFlashAttribute("flashAttribute","redirectWithRedirectView");
+//        attr.addAttribute("attribute","redirectWithRedirectView");
+        return new RedirectView("http://localhost:8080/user-api/home");
     }
 
 }
